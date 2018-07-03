@@ -110,9 +110,9 @@ class PDFCreator(object):
         with open(self.filename, 'r') as data:
             for done, lineno, line in self._process(data):
                 if len(line) > self.charsPerLine:
-                    self._scribble(
-                        "Warning: wrapping line %d in %s" %
-                        (lineno + 1, self.filename))
+                    # self._scribble(
+                    #     "Warning: wrapping line %d in %s" %
+                    #     (lineno + 1, self.filename))
                     while len(line) > self.charsPerLine:
                         yield done, line[:self.charsPerLine]
                         line = line[self.charsPerLine:]
@@ -135,16 +135,16 @@ class PDFCreator(object):
             sys.stderr.write(text + os.linesep)
 
     def generate(self):
-        self._scribble(
-            "Writing '%s' with %d characters per "
-            "line and %d lines per page..." %
-            (self.filename, self.charsPerLine, self.linesPerPage)
-        )
+        # self._scribble(
+        #     "Writing '%s' with %d characters per "
+        #     "line and %d lines per page..." %
+        #     (self.filename, self.charsPerLine, self.linesPerPage)
+        # )
         if self.breakOnBlanks:
             pageno = self._generateBob(self._readDocument())
         else:
             pageno = self._generatePlain(self._readDocument())
-        self._scribble("PDF document: %d pages" % pageno)
+        # self._scribble("PDF document: %d pages" % pageno)
 
     def _generatePlain(self, data):
         pageno = 1

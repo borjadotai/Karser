@@ -1,11 +1,8 @@
 import argparse
-from reportlab.pdfgen import canvas
 import os
-import time
+import datetime
  
-#
 # Setting up parser option to control how we wanna run the script and se the file we want to use
-#
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--file", dest="myFilenameVariable",
                     help="After writting -f, call the file that you want to format", metavar="FILE")
@@ -15,14 +12,13 @@ parser.add_argument("-q", "--quiet",
                         help="By default we print out the entries on terminal, if you just want to see the succeses and erros, use -q")
 args = parser.parse_args()
 
-#
 # Opening and reading file. Whole text stored as a string in content. Parsed after that by chunks (entries / notes) using '==========' in entries.
-#
-content2 = open(args.myFilenameVariable, 'r').read()
-content = content2.split('==========')
+fullContent = open(args.myFilenameVariable, 'r').read()
+content = fullContent.split('==========')
 
+# Function that separates the full content into chunks per book. Returns an array of iteration numbers that defines the sections per books and a list of their titles.
 def separator(entries):
-  different = []
+  different = [] # It will have the structure [126, 256, 356, 460] where the numbers are iteration numbers for each book.
   books = []
   for i in range (0, len(entries)-1):
     try: 
@@ -38,24 +34,17 @@ def separator(entries):
     except:
       different.append(i)
       books.append(tit)
-  # print books
   return different, books
 
-#
-# Initialising succesful and errors arrays. They will contain all the final information. Successful will have all the parsed information and errors will contain the ones that broke for future revision.
-#
+# Initialising succesful and errors arrays. They will contain all the final information as logs. Successful will have all the parsed information and errors will contain the ones that broke for future revision.
 succesful = []
 errors = []
 
-#
 # PARSING PROCESS
-#
 def printer(entries, name):
-  tit = name.rstrip().lstrip() + '.txt'
-  print tit
+  txt = name.rstrip().lstrip() + '.txt'
   pdf = name.rstrip().lstrip() + '.pdf'
-  print pdf
-  f = open(tit, "w")
+  f = open(txt, "w")
   for i in range (0, len(entries)-1):
     try: 
       iteration = []
@@ -72,12 +61,8 @@ def printer(entries, name):
       else:
         author = 'NOT FOUND'
         title = main
-      # if (args.verbose):
-      #   print 'Title: ' + title
       f.write('Title: ' + title.lstrip() + '\n')
       iteration.append(title)
-      # if (args.verbose):
-      #   print 'Author: ' + author
       f.write('Author: ' + author.lstrip() + '\n')
       iteration.append(author)
       # Here we deal with entries that don't contain any page
@@ -92,16 +77,6 @@ def printer(entries, name):
         page = 'NOT FOUND'
         iteration.append('NOT FOUND')
 
-      # If verbose is on, we print out every parsed entry on terminal
-      # if (args.verbose):
-      #   print 'Page: ' + page
-      #   print 'Location: ' + location
-      #   print 'Date: ' + date
-      #   print 'Text: ' + text
-      #   print('')
-      #   print('==========')
-      #   print('')
-
       f.write('Page: ' + page.lstrip() + '\n')
       f.write('Location: ' + location.lstrip() + '\n')
       f.write('Date: ' + date.lstrip() + '\n')
@@ -110,9 +85,6 @@ def printer(entries, name):
       f.write('==========' + '\n')
       f.write('\n')
 
-
-
-      # 
       iteration.append(location)
       iteration.append(date)
       iteration.append(text)
@@ -123,39 +95,36 @@ def printer(entries, name):
       errors.append([i, content])
       pass
 
-  # print len(succesful)
-  # print len(errors)
+  # Closes the txt file, turns it into a pdf and then deletes de previously created txt
   f.close()
-  os.system('python txt2pdf.py -o ' + pdf + ' ' + tit)
-
-# for i in range (0, len(succesful)-1):
-#   if succesful[i][0] == succesful[i+1][0]:
-#     if i == 0:
-#       name = ''.join(succesful[i][0].rstrip() + '.txt')
-#       f = open(name, "w")
-#       title = 'Title: ' + succesful[i][0]
-#       author = 'Author: ' + succesful[i][1]
-#       f.write(title)
-#       f.write(author)
-#     title = 'Title: ' + succesful[i][0]
-#     author = 'Author: ' + succesful[i][1]
-#     f.write(title)
-#     f.write(author)
-#   else:
-#     f.close() 
-#     name = ''.join(succesful[i+1][0].rstrip() + '.pdf')
-#     f = open(name, "w")
-#     title = 'Title: ' + succesful[i+1][0]
-#     author = 'Author: ' + succesful[i+1][1]
-#     f.write(title)
-#     f.write(author)
+  os.system('python txt2pdf.py -o ' + pdf + ' ' + txt)
+  os.system('rm ' + txt)
     
-
-
+# RUNNER (WHERE THE MAGIC GETS CALLED). We call the function separator with our full content separated only by '========' and we get the list of iteration numbers and book titles.
 diffs, books = separator(content)
 
+# Then we parse and create pdfs for each book.
 for i in range(0, len(diffs)):
   if i == 0:
     printer(content[0:diffs[0]], books[0])
   else:
     printer(content[diffs[i-1]+1:diffs[i]], books[i])
+
+# Create a Notes directory and put everything inside
+if not os.path.exists('Notes'):
+  os.makedirs('Notes')
+  for i in range (0, len(books)):
+    name = ''.join(books[i] + '.pdf')
+    new = ''.join('Notes/' + name)
+    os.rename(name, new)
+
+# If verbose was chosen, print out successful and errors and create a log file
+if (args.verbose):
+  now = datetime.datetime.now()
+  log = "Notes/errors_{0}.txt".format(now.strftime("%Y-%m-%d"))
+  f = open(log, "w")
+  f.write(''.join(str(e) for e in errors))
+  f.close()
+
+  print 'Succesfully added:', len(succesful)
+  print 'Woops, there were:', len(errors), 'errors. You can see the logfile', log
