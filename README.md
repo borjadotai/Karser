@@ -1,4 +1,4 @@
-![kaser_logo](https://i.imgur.com/5QjLfAb.png)
+![kaser_logo](https://i.imgur.com/Yqw7hNM.png)
 ## The ultimate Kindle Note Parser 🚀
 
 Test command: python karser.py -f dataSet.txt 
