@@ -6,10 +6,10 @@ import datetime
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--file", dest="myFilenameVariable",
                     help="After writting -f, call the file that you want to format", metavar="FILE")
-parser.add_argument("-q", "--quiet",
-                        action="store_false", dest="verbose",
-                        default=True,
-                        help="By default we print out the entries on terminal, if you just want to see the succeses and erros, use -q")
+parser.add_argument("-e", "--extended",
+                        action="store_true", dest="verbose",
+                        default=False,
+                        help="If you run -e at the end of your command you'll be able to see our logs and check if there was errors and were.")
 args = parser.parse_args()
 
 # Opening and reading file. Whole text stored as a string in content. Parsed after that by chunks (entries / notes) using '==========' in entries.
