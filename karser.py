@@ -40,6 +40,10 @@ def separator(entries):
 succesful = []
 errors = []
 
+# Create a Notes directory and put everything inside
+if not os.path.exists('Notes'):
+  os.makedirs('Notes')
+
 # PARSING PROCESS
 def printer(entries, name):
   txt = name.rstrip().lstrip() + '.txt'
@@ -99,6 +103,8 @@ def printer(entries, name):
   f.close()
   os.system('python txt2pdf.py -o ' + pdf + ' ' + txt)
   os.system('rm ' + txt)
+  new = ''.join('Notes/' + pdf)
+  os.rename(pdf, new)
     
 # RUNNER (WHERE THE MAGIC GETS CALLED). We call the function separator with our full content separated only by '========' and we get the list of iteration numbers and book titles.
 diffs, books = separator(content)
@@ -110,21 +116,16 @@ for i in range(0, len(diffs)):
   else:
     printer(content[diffs[i-1]+1:diffs[i]], books[i])
 
-# Create a Notes directory and put everything inside
-if not os.path.exists('Notes'):
-  os.makedirs('Notes')
-  for i in range (0, len(books)):
-    name = ''.join(books[i] + '.pdf')
-    new = ''.join('Notes/' + name)
-    os.rename(name, new)
-
 # If verbose was chosen, print out successful and errors and create a log file
 if (args.verbose):
-  now = datetime.datetime.now()
-  log = "Notes/errors_{0}.txt".format(now.strftime("%Y-%m-%d"))
-  f = open(log, "w")
-  f.write(''.join(str(e) for e in errors))
-  f.close()
-
-  print 'Succesfully added:', len(succesful)
-  print 'Woops, there were:', len(errors), 'errors. You can see the logfile', log
+  if not errors:
+    print 'Succesfully added:', len(succesful)
+    print 'No errors found.'
+  else:
+    now = datetime.datetime.now()
+    log = "Notes/errors_{0}.txt".format(now.strftime("%Y-%m-%d"))
+    f = open(log, "w")
+    f.write(''.join(str(e) for e in errors))
+    f.close()
+    print 'Succesfully added:', len(succesful)
+    print 'Woops, there were:', len(errors), 'errors. You can see the logfile', log
