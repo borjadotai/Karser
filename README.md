@@ -1,5 +1,5 @@
 ![kaser_logo](https://i.imgur.com/Yqw7hNM.png)
-## The ultimate Kindle Note Parser 🚀
+## The Ultimate Kindle Note & Highlight Parser 🚀
 
 ### What is it?
 When you take notes or higlight things on kindle, all those actions get stored in a file called clippings.txt that you have access to. Getting that file is a great way of going through the most important parts of the books you've read (this is only necesary if you didn't purchase the books on amazon itself, if you did, you can handle everything through their app). 
