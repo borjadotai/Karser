@@ -11,8 +11,17 @@ Karser is a simple python script that lets you turn your clippings.txt file from
 ### Usage
 
 Karser is really easy to use! Since it's just a small python script, you just have to run it passing it the necessary arguments as flags, let's go through that!
+
+1. Clone this repo 
+2. Get inside the folder
+3. Move your file into the folder
+4. Run the script! 💖
+
 ```sh
-python karser.py -f filename.txt 
+git clone git@github.com:P3rzival/Karser.git
+cd Karser
+mv ~/my_files/clippings.txt ~/Downloads/Karser
+python karser.py -f clippings.txt 
 ```
 As simple as that! You just gotta call karser script and pass it the .txt file you want to parse after the -f flag. 
 
