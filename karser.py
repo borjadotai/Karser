@@ -116,7 +116,7 @@ for i in range(0, len(diffs)):
   else:
     printer(content[diffs[i-1]+1:diffs[i]], books[i])
 
-# If verbose was chosen, print out successful and errors and create a log file
+# If verbose was chosen, print out successful and if there were errors print them and create a log file
 if (args.verbose):
   if not errors:
     print 'Succesfully added:', len(succesful)
