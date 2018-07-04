@@ -10,8 +10,6 @@ from reportlab.pdfbase.ttfonts import TTFont
 import re
 import sys
 import os
-
-
 class Margins(object):
     def __init__(self, right, left, top, bottom):
         self._right = right
