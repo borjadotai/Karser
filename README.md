@@ -10,7 +10,7 @@ Karser is a simple python script that lets you turn your clippings.txt file from
 
 ### Usage
 
-Karser is really easy to use! Since it's just a small python script, you just have to run it passing it the necessary arguments as flags, let's go through that!
+Karser is really easy to use! Since it's just a small python script, you just have to run it passing it the necessary arguments as flags, so let's go through that!
 
 1. Clone this repo 
 2. Get inside the folder
